@@ -1,10 +1,11 @@
-import { Text } from "react-native";
-
+import { ChannelList, Channel, MessageList, MessageInput} from "stream-chat-expo";
+import { router } from "expo-router";
 
 
 
 
 export default function MainTabScreen(){
-    return <Text> Main tab </Text> ;
+   
+    return <ChannelList onSelect={(channel) => router.push(`/channel/${channel.cid}`) } />;
     
 }
