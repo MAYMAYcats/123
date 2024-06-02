@@ -1,5 +1,6 @@
 import { Slot,Stack } from 'expo-router';
-import { PropsWithChildren, useEffect } from 'react';
+import { PropsWithChildren, useEffect, useState } from 'react';
+import { ActivityIndicator } from 'react-native';
 
 import { StreamChat } from 'stream-chat';
 import { Chat, OverlayProvider }  from 'stream-chat-expo';
@@ -9,6 +10,9 @@ const client = StreamChat.getInstance(process.env.EXPO_PUBLIC_STREAM_API_KEY);
 
 
 export default function ChatProvider({children}: PropsWithChildren){
+    
+    const [isReady, setIsReady] = useState(false);
+    
     useEffect(() => {
 
         const connect = async ()=>{
@@ -20,6 +24,9 @@ export default function ChatProvider({children}: PropsWithChildren){
                 },
                 client.devToken('jlahey')
               );
+              setIsReady(true)
+
+
 
               /**
  *  Channel created using a channel id
@@ -28,10 +35,21 @@ export default function ChatProvider({children}: PropsWithChildren){
 //     name: 'The Park',
 //   });
 //   await channel.watch();
-//         
+        
             }
         connect();
-    })
+
+return () => {
+    client.disconnectUser();
+    setIsReady(false);
+};
+
+
+    }, []);
+    if (!isReady) {
+        return <ActivityIndicator />;
+    }
+
     return (
 <OverlayProvider>
 
